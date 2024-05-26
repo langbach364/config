@@ -12,7 +12,7 @@ translate_file() {
     local output_file=$2
 
     trans -b -i $input_file -o $output_file -s en -t vi 
-    # -b: dịch văn bản thu gọngọn, -i: tệp đầu vào, -o: tệp đầu ra, -s: ngôn ngữ nguồn (en: tiếng Anh), -t: ngôn ngữ đích (vi: tiếng Việt)
+    # -b: dịch văn bản thu gọn, -i: tệp đầu vào, -o: tệp đầu ra, -s: ngôn ngữ nguồn (en: tiếng Anh), -t: ngôn ngữ đích (vi: tiếng Việt)
 
 }
 
