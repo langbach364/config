@@ -27,8 +27,8 @@ Persistent=true
 WantedBy=timers.target
 EOF'
 
-# Cài đặt reflector option --noconfirm bỏ qua xác nhận
-sudo pacman -S --noconfirm reflector
+# Cài đặt reflector 
+sudo pacman -S reflector
 
 # Bật timer reflector (sẽ tự động kích hoạt reflector.service)
 sudo systemctl enable reflector.timer
