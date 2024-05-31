@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# Đường dẫn tới thư mục chứa các tập tin dịch vụ của systemd
+dir_path="/etc/systemd/system"
+
 # Tạo file reflector.service tập tin dịch vụ
-sudo bash -c 'cat > /etc/systemd/system/reflector.service <<EOF
+sudo bash -c "cat > $dir_path/reflector.service <<EOF
 [Unit]
 Description=Update Pacman Mirrorlist with Reflector
 After=network-online.target
@@ -12,10 +15,10 @@ ExecStart=/usr/bin/reflector --verbose --latest 40 --sort rate --save /etc/pacma
 
 [Install]
 WantedBy=multi-user.target
-EOF'
+EOF"
 
 # Tạo file reflector.timer tập tin thời gian hoạt động dịch vụ
-sudo bash -c 'cat > /etc/systemd/system/reflector.timer <<EOF
+sudo bash -c "cat > $dir_path/reflector.timer <<EOF
 [Unit]
 Description=Run Reflector Service at Boot
 
@@ -25,13 +28,13 @@ Persistent=true
 
 [Install]
 WantedBy=timers.target
-EOF'
+EOF"
 
-# Cài đặt reflector 
+# Cài đặt reflector
 sudo pacman -S reflector
 
 # Bật timer reflector (sẽ tự động kích hoạt reflector.service)
 sudo systemctl enable reflector.timer
 sudo systemctl start reflector.timer
 
-echo "Cấu hình tự động cập nhật mirror thành công hãy kiểm tra bằng lệnh sudo systemctl status"
+echo "Cấu hình tự động cập nhật mirror thành công. Hãy kiểm tra bằng lệnh: sudo systemctl status reflector.timer"
