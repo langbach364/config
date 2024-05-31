@@ -1,35 +1,37 @@
 #!/bin/bash
 
-# Cài đặt gói reflector nếu chưa được cài đặt
-sudo pacman -Syu --needed reflector
-
-# Tạo thư mục cấu hình reflector nếu chưa tồn tại
-sudo mkdir -p /etc/xdg/reflector
-
-# Tạo tệp cấu hình reflector
-sudo tee /etc/xdg/reflector/reflector.conf > /dev/null <<EOT
---save /etc/pacman.d/mirrorlist
---protocol https
---latest 5
---sort rate
-EOT
-
-# Tạo tệp dịch vụ reflector
-sudo tee /etc/systemd/system/reflector.service > /dev/null <<EOT
+# Tạo file reflector.service tập tin dịch vụ
+sudo bash -c 'cat > /etc/systemd/system/reflector.service <<EOF
 [Unit]
-Description=Pacman mirrorlist update
+Description=Update Pacman Mirrorlist with Reflector
+After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/reflector --save /etc/pacman.d/mirrorlist
+ExecStart=/usr/bin/reflector --verbose --latest 40 --sort rate --save /etc/pacman.d/mirrorlist
 
 [Install]
 WantedBy=multi-user.target
-EOT
+EOF'
 
-# Kích hoạt và bật dịch vụ reflector
-sudo systemctl daemon-reload
-sudo systemctl enable reflector.service
-sudo systemctl start reflector.service
+# Tạo file reflector.timer tập tin thời gian hoạt động dịch vụ
+sudo bash -c 'cat > /etc/systemd/system/reflector.timer <<EOF
+[Unit]
+Description=Run Reflector Service at Boot
 
-echo "Cấu hình reflector đã hoàn tất."
+[Timer]
+OnBootSec=0min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF'
+
+# Cài đặt reflector option --noconfirm bỏ qua xác nhận
+sudo pacman -S --noconfirm reflector
+
+# Bật timer reflector (sẽ tự động kích hoạt reflector.service)
+sudo systemctl enable reflector.timer
+sudo systemctl start reflector.timer
+
+echo "Cấu hình tự động cập nhật mirror thành công hãy kiểm tra bằng lệnh sudo systemctl status"
