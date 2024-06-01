@@ -7,7 +7,8 @@ dir_path="/etc/systemd/system"
 sudo bash -c "cat > $dir_path/reflector.service <<EOF
 [Unit]
 Description=Update Pacman Mirrorlist with Reflector
-After=network-online.target
+Wants=network-online.target
+After=network-online.target NetworkManager-wait-online.service
 
 [Service]
 Type=oneshot
