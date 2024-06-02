@@ -34,8 +34,15 @@ EOF"
 # Cài đặt reflector
 sudo pacman -S reflector
 
-# Bật timer reflector (sẽ tự động kích hoạt reflector.service)
+# Bật timer reflector
 sudo systemctl enable reflector.timer
 sudo systemctl start reflector.timer
 
-echo "Cấu hình tự động cập nhật mirror thành công. Hãy kiểm tra bằng lệnh: sudo systemctl status reflector.timer"
+# Bật service reflector
+sudo systemctl enable reflector.service
+sudo systemctl start reflector.service
+
+
+echo "Cấu hình tự động cập nhật mirror thành công."
+echo "/n Hãy kiểm tra bằng lệnh sudo systemctl status reflector.timer"
+echo "/n Hãy kiểm tra bằng lệnh sudo systemctl status reflector.service"
